@@ -58,7 +58,8 @@ class ShiftController extends Controller {
             'carer_id' => $request->carer_id,
             'client_id' => $request->client_id,
             'start_time' => $request->start_time,
-            'end_time' => $request->end_time
+            'end_time' => $request->end_time,
+            'notes' => $request->notes
         ]);
         $newShift->save();
         return response()->json($newShift->load(['carer', 'client']), 201);
