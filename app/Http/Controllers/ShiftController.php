@@ -31,8 +31,6 @@ class ShiftController extends Controller {
             $query->where('id', '!=', $excludeShiftId);
         }
 
-        \Log::info('Checking overlap SQL', ['sql' => $query->toSql(), 'bindings' => $query->getBindings()]);
-
         return $query->exists();
     }
 

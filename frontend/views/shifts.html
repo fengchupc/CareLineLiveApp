@@ -1,0 +1,141 @@
+<div class="container mt-4">
+    <h2>Shifts Management</h2>
+
+    <div class="alert alert-danger" ng-if="errorMessage" role="alert">
+        {{errorMessage}}
+    </div>
+    <div class="alert alert-success" ng-if="successMessage" role="alert">
+        {{successMessage}}
+    </div>
+
+    <button class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#createShiftModal">
+        Add Shift
+    </button>
+
+    <div class="table-responsive">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Carer</th>
+                    <th>Client</th>
+                    <th>Start Time</th>
+                    <th>End Time</th>
+                    <th>Notes</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="shift in shifts">
+                    <td>{{shift.carer.name}}</td>
+                    <td>{{shift.client.name}}</td>
+                    <td>{{formatDateTime(shift.start_time)}}</td>
+                    <td>{{formatDateTime(shift.end_time)}}</td>
+                    <td>{{shift.notes}}</td>
+                    <td>
+                        <button class="btn btn-sm btn-warning me-2" ng-click="startEditing(shift)" data-bs-toggle="modal" data-bs-target="#editShiftModal">
+                            Edit
+                        </button>
+                        <button class="btn btn-sm btn-danger" ng-click="deleteShift(shift.id)">
+                            Delete
+                        </button>
+                    </td>
+                </tr>
+                <tr ng-if="!shifts.length">
+                    <td colspan="6" class="text-center">No shifts found</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Create Shift -->
+    <div class="modal fade" id="createShiftModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Add Shift</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form ng-submit="createShift()">
+                        <div class="mb-3">
+                            <label class="form-label">Carer *</label>
+                            <select class="form-select" ng-model="newShift.carer_id" required>
+                                <option value="">Select Carer</option>
+                                <option ng-repeat="carer in carers" value="{{carer.id + ''}}">{{carer.name}}</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Client *</label>
+                            <select class="form-select" ng-model="newShift.client_id" required>
+                                <option value="">Select Client</option>
+                                <option ng-repeat="client in clients" value="{{client.id + ''}}">{{client.name}}</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Start Time *</label>
+                            <input type="datetime-local" class="form-control" ng-model="newShift.start_time" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">End Time *</label>
+                            <input type="datetime-local" class="form-control" ng-model="newShift.end_time" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Notes</label>
+                            <textarea class="form-control" ng-model="newShift.notes"></textarea>
+                        </div>
+                        <div class="text-end">
+                            <button type="button" class="btn btn-secondary me-2" data-bs-dismiss="modal">Cancel</button>
+                            <button type="submit" class="btn btn-primary">Create</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Shift -->
+    <div class="modal fade" id="editShiftModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Edit Shift</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form ng-submit="updateShift()" ng-if="editingShift">
+                        <div class="mb-3">
+                            <label class="form-label">Carer *</label>
+                            <select class="form-select" ng-model="editingShift.carer_id" required>
+                                <option value="">Select Carer</option>
+                                <option ng-repeat="carer in carers" value="{{carer.id + ''}}">{{carer.name}}</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Client *</label>
+                            <select class="form-select" ng-model="editingShift.client_id" required>
+                                <option value="">Select Client</option>
+                                <option ng-repeat="client in clients" value="{{client.id + ''}}">{{client.name}}</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Start Time *</label>
+                            <input type="datetime-local" class="form-control" ng-model="editingShift.start_time" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">End Time *</label>
+                            <input type="datetime-local" class="form-control" ng-model="editingShift.end_time" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Notes</label>
+                            <textarea class="form-control" ng-model="editingShift.notes"></textarea>
+                        </div>
+                        <div class="text-end">
+                            <button type="button" class="btn btn-secondary me-2" data-bs-dismiss="modal">Cancel</button>
+                            <button type="submit" class="btn btn-primary">Update</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div> 
