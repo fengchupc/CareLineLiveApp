@@ -12,8 +12,19 @@ class ClientController extends Controller {
      * Display a listing of the resource.
      * REST - GET
      */
-    public function index() {
-        return response()->json(Client::all());
+    public function index(Request $request) {
+        $perPage = $request->input('per_page', 10); // 10 records per page
+        $clients = \App\Models\Client::paginate($perPage);
+
+        return response()->json([
+            'data' => $clients->items(),
+            'pagination' => [
+                'current_page' => $clients->currentPage(),
+                'last_page' => $clients->lastPage(),
+                'per_page' => $clients->perPage(),
+                'total' => $clients->total(),
+            ]
+        ]);
     }
 
     /**

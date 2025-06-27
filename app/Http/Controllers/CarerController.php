@@ -12,8 +12,18 @@ class CarerController extends Controller {
      * Display a listing of the resource.
      * REST - GET
      */
-    public function index() {
-        return response()->json(Carer::all());
+    public function index(Request $request) {
+        $perPage = $request->input('per_page', 10);
+        $carers = \App\Models\Carer::paginate($perPage);
+        return response()->json([
+            'data' => $carers->items(),
+            'pagination' => [
+                'current_page' => $carers->currentPage(),
+                'last_page' => $carers->lastPage(),
+                'per_page' => $carers->perPage(),
+                'total' => $carers->total(),
+            ]
+        ]);
     }
 
     /**

@@ -12,8 +12,18 @@ class ShiftController extends Controller {
     /**
      * Display a listing of the resource.
      */
-    public function index() {
-        return response()->json(Shift::with(['carer', 'client'])->get());
+    public function index(Request $request) {
+        $perPage = $request->input('per_page', 10); // 10 records per page
+        $shifts = \App\Models\Shift::with(['carer', 'client'])->paginate($perPage);
+        return response()->json([
+            'data' => $shifts->items(),
+            'pagination' => [
+                'current_page' => $shifts->currentPage(),
+                'last_page' => $shifts->lastPage(),
+                'per_page' => $shifts->perPage(),
+                'total' => $shifts->total(),
+            ]
+        ]);
     }
 
     private function hasOverlappingShift($carerId, $startTime, $endTime, $excludeShiftId = null) {
