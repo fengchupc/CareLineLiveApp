@@ -1,9 +1,7 @@
 <div class="container mt-4">
     <h2>Shifts Management</h2>
 
-    <div class="alert alert-danger" ng-if="errorMessage" role="alert">
-        {{errorMessage}}
-    </div>
+
     <div class="alert alert-success" ng-if="successMessage" role="alert">
         {{successMessage}}
     </div>
@@ -17,7 +15,9 @@
             <thead>
                 <tr>
                     <th>Carer</th>
+                    <th>Carer Phone</th>
                     <th>Client</th>
+                    <th>Client Phone</th>
                     <th>Start Time</th>
                     <th>End Time</th>
                     <th>Notes</th>
@@ -27,7 +27,9 @@
             <tbody>
                 <tr ng-repeat="shift in shifts">
                     <td>{{shift.carer.name}}</td>
+                    <td>{{shift.carer.phone}}</td>
                     <td>{{shift.client.name}}</td>
+                    <td>{{shift.client.phone}}</td>
                     <td>{{formatDateTime(shift.start_time)}}</td>
                     <td>{{formatDateTime(shift.end_time)}}</td>
                     <td>{{shift.notes}}</td>
@@ -41,11 +43,26 @@
                     </td>
                 </tr>
                 <tr ng-if="!shifts.length">
-                    <td colspan="6" class="text-center">No shifts found</td>
+                    <td colspan="8" class="text-center">No shifts found</td>
                 </tr>
             </tbody>
         </table>
     </div>
+
+    <!-- Pagination Controls -->
+    <nav aria-label="Shift pagination" ng-if="totalPages > 1">
+        <ul class="pagination justify-content-center mt-3">
+            <li class="page-item" ng-class="{disabled: currentPage === 1}">
+                <button class="page-link" ng-click="prevPage()" ng-disabled="currentPage === 1">Previous</button>
+            </li>
+            <li class="page-item disabled">
+                <span class="page-link">Page {{currentPage}} of {{totalPages}}</span>
+            </li>
+            <li class="page-item" ng-class="{disabled: currentPage === totalPages}">
+                <button class="page-link" ng-click="nextPage()" ng-disabled="currentPage === totalPages">Next</button>
+            </li>
+        </ul>
+    </nav>
 
     <!-- Create Shift -->
     <div class="modal fade" id="createShiftModal" tabindex="-1">
@@ -54,6 +71,9 @@
                 <div class="modal-header">
                     <h5 class="modal-title">Add Shift</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="alert alert-danger" ng-if="errorMessage" role="alert">
+                    {{errorMessage}}
                 </div>
                 <div class="modal-body">
                     <form ng-submit="createShift()">
@@ -100,6 +120,9 @@
                 <div class="modal-header">
                     <h5 class="modal-title">Edit Shift</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="alert alert-danger" ng-if="errorMessage" role="alert">
+                    {{errorMessage}}
                 </div>
                 <div class="modal-body">
                     <form ng-submit="updateShift()" ng-if="editingShift">

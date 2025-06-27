@@ -23,48 +23,23 @@ angular.module('schedulerApp')
         }
 
         this.getCarers = function() {
-            return $http.get(API_URL + '/carers')
-                .catch(handleError);
-        };
-
-        this.createCarer = function(carer) {
-            return $http.post(API_URL + '/carers', carer)
-                .catch(handleError);
-        };
-
-        this.updateCarer = function(id, carer) {
-            return $http.put(API_URL + '/carers/' + id, carer)
-                .catch(handleError);
-        };
-
-        this.deleteCarer = function(id) {
-            return $http.delete(API_URL + '/carers/' + id)
-                .catch(handleError);
+            let url = API_URL + '/carers';
+            return $http.get(url).catch(handleError);
         };
 
         this.getClients = function() {
-            return $http.get(API_URL + '/clients')
-                .catch(handleError);
+            let url = API_URL + '/clients';
+            return $http.get(url).catch(handleError);
         };
 
-        this.createClient = function(client) {
-            return $http.post(API_URL + '/clients', client)
-                .catch(handleError);
-        };
-
-        this.updateClient = function(id, client) {
-            return $http.put(API_URL + '/clients/' + id, client)
-                .catch(handleError);
-        };
-
-        this.deleteClient = function(id) {
-            return $http.delete(API_URL + '/clients/' + id)
-                .catch(handleError);
-        };
-
-        this.getShifts = function() {
-            return $http.get(API_URL + '/shifts')
-                .catch(handleError);
+        this.getShifts = function(page, perPage) {
+            let url = API_URL + '/shifts';
+            if (page || perPage) {
+                url += '?';
+                if (page) url += 'page=' + page + '&';
+                if (perPage) url += 'per_page=' + perPage;
+            }
+            return $http.get(url).catch(handleError);
         };
 
         this.createShift = function(shift) {

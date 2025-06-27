@@ -7,11 +7,19 @@ angular.module('schedulerApp')
         $scope.editingShift = null;
         $scope.errorMessage = '';
         $scope.successMessage = '';
+        $scope.currentPage = 1;
+        $scope.perPage = 10;
+        $scope.totalPages = 1;
+        $scope.totalItems = 0;
 
-        function loadAll() {
-            ApiService.getShifts()
+        function loadAll(page) {
+            page = page || $scope.currentPage;
+            ApiService.getShifts(page, $scope.perPage)
                 .then(function(response) {
-                    $scope.shifts = response.data;
+                    $scope.shifts = response.data.data;
+                    $scope.currentPage = response.data.pagination.current_page;
+                    $scope.totalPages = response.data.pagination.last_page;
+                    $scope.totalItems = response.data.pagination.total;
                 })
                 .catch(function(error) {
                     $scope.errorMessage = 'Error loading shifts: ' + (error.data?.message || 'Unknown error');
@@ -19,7 +27,7 @@ angular.module('schedulerApp')
 
             ApiService.getCarers()
                 .then(function(response) {
-                    $scope.carers = response.data;
+                    $scope.carers = response.data.data || response.data;
                 })
                 .catch(function(error) {
                     $scope.errorMessage = 'Error loading carers: ' + (error.data?.message || 'Unknown error');
@@ -27,7 +35,7 @@ angular.module('schedulerApp')
 
             ApiService.getClients()
                 .then(function(response) {
-                    $scope.clients = response.data;
+                    $scope.clients = response.data.data || response.data;
                 })
                 .catch(function(error) {
                     $scope.errorMessage = 'Error loading clients: ' + (error.data?.message || 'Unknown error');
@@ -62,12 +70,17 @@ angular.module('schedulerApp')
 
             ApiService.createShift($scope.newShift)
                 .then(function(response) {
-                    $scope.shifts.push(response.data);
                     $scope.newShift = {};
                     var modal = document.getElementById('createShiftModal');
                     var modalInstance = bootstrap.Modal.getInstance(modal) || new bootstrap.Modal(modal);
                     modalInstance.hide();
                     showSuccess('Shift created successfully');
+                    ApiService.getShifts(1, $scope.perPage).then(function(res) {
+                        var total = res.data.pagination.total;
+                        var perPage = res.data.pagination.per_page;
+                        var lastPage = Math.ceil(total / perPage);
+                        $scope.goToPage(lastPage);
+                    });
                 })
                 .catch(function(error) {
                     showError('Error creating shift: ' + (error.data?.message || 'Unknown error'));
@@ -110,7 +123,11 @@ angular.module('schedulerApp')
             if (confirm('Are you sure you want to delete this shift?')) {
                 ApiService.deleteShift(id)
                     .then(function() {
-                        $scope.shifts = $scope.shifts.filter(s => s.id !== id);
+                        if ($scope.shifts.length === 1 && $scope.currentPage > 1) {
+                            $scope.goToPage($scope.currentPage - 1);
+                        } else {
+                            $scope.goToPage($scope.currentPage);
+                        }
                         showSuccess('Shift deleted successfully');
                     })
                     .catch(function(error) {
@@ -121,6 +138,22 @@ angular.module('schedulerApp')
 
         $scope.formatDateTime = function(dateString) {
             return new Date(dateString).toLocaleString();
+        };
+
+        $scope.goToPage = function(page) {
+            if (page >= 1 && page <= $scope.totalPages) {
+                loadAll(page);
+            }
+        };
+        $scope.nextPage = function() {
+            if ($scope.currentPage < $scope.totalPages) {
+                loadAll($scope.currentPage + 1);
+            }
+        };
+        $scope.prevPage = function() {
+            if ($scope.currentPage > 1) {
+                loadAll($scope.currentPage - 1);
+            }
         };
 
         loadAll();
