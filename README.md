@@ -6,8 +6,15 @@
 - Shifts and Carers: many-to-one (one shift belongs to one Carer)
 - Shifts and Clients: many-to-one (one shift belongs to one client)
 
-### install Laravel
-'''composer create-project laravel/laravel .'''
+## Assumptions
+- Backend uses Laravel 
+- Frontend is a static AngularJS 1.x app, served via PHP's built-in server (no Node.js required)
+- Default DB is SQLite (file: `database/database.sqlite`)
+- API endpoints:
+  - `/carers` (CRUD, paginated)
+  - `/clients` (CRUD, paginated)
+  - `/shifts` (CRUD, paginated, with overlap validation)
+- Pagination: default 10 per page, structure `{ data: [...], pagination: {...} }`
 
 # CareLineLive Home Care Scheduler
 
@@ -21,14 +28,14 @@
 2. **Copy environment file and set up DB:**
    ```sh
    cp .env.example .env
-   # Edit .env as needed (default uses SQLite)
+   # Edit .env as needed
    touch database/database.sqlite
    ```
 3. **Generate app key:**
    ```sh
    php artisan key:generate
    ```
-4. **Run migrations and seeders:**
+4. **Run migrations and seeders to create the database table and sample data:**
    ```sh
    php artisan migrate --seed
    ```
@@ -52,14 +59,3 @@
   php artisan test
   ```
 
-## Assumptions
-- Backend uses Laravel 12+ and PHP 8.2+
-- Frontend is a static AngularJS 1.x app, served via PHP's built-in server (no Node.js required)
-- Default DB is SQLite (file: `database/database.sqlite`)
-- CORS is configured to allow frontend-backend communication
-- API endpoints:
-  - `/api/carers` (CRUD, paginated)
-  - `/api/clients` (CRUD, paginated)
-  - `/api/shifts` (CRUD, paginated, with overlap validation)
-- Pagination: default 10 per page, structure `{ data: [...], pagination: {...} }`
-- All CRUD modals use Bootstrap
