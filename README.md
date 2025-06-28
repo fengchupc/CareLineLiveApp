@@ -53,6 +53,23 @@
    ```
    The frontend will be available at http://localhost:8080
 
+### Frontend (Angular 2+)
+1. **Go to the Angular 2+ frontend directory:**
+   ```sh
+   cd frontend_Angular
+   ```
+2. **Install dependencies:**
+   ```sh
+   npm install
+   ```
+3. **Start the Angular dev server:**
+   ```sh
+   npm start
+   # Or: npx ng serve --port=4200
+   ```
+   The frontend will be available at http://localhost:4200
+
+
 ### Running Tests
 - **Feature & unit tests:**
   ```sh
