@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "careline-live-angular": {
+    "carelinelive-angular": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
@@ -17,7 +17,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist/careline-live-angular",
+            "outputPath": "dist/carelinelive-angular",
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": [
@@ -105,4 +105,4 @@
   "cli": {
     "analytics": "a3e36134-3829-4305-9a79-14c2b48e3897"
   }
-} 
+}
